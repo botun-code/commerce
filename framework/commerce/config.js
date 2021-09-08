@@ -14,6 +14,7 @@ const PROVIDERS = [
   'shopify',
   'swell',
   'vendure',
+  'horeca',
 ]
 
 function getProviderName() {
