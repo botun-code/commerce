@@ -1,6 +1,6 @@
 import cn from 'classnames'
 import Link from 'next/link'
-import { FC } from 'react'
+import { FC, useCallback } from 'react'
 import s from './CartSidebarView.module.css'
 import CartItem from '../CartItem'
 import { Button, Text } from '@components/ui'
@@ -9,6 +9,10 @@ import { Bag, Cross, Check } from '@components/icons'
 import useCart from '@framework/cart/use-cart'
 import usePrice from '@framework/product/use-price'
 import SidebarLayout from '@components/common/SidebarLayout'
+
+// TODO move to env
+const PACKAGING_PRICE = 5
+const DELIVER_PRICE = 33
 
 const CartSidebarView: FC = () => {
   const { closeSidebar, setSidebarView } = useUI()
@@ -26,6 +30,22 @@ const CartSidebarView: FC = () => {
       currencyCode: data.currency.code,
     }
   )
+
+  const getPackagingPrice = useCallback(() => {
+    let calculatedValue = 0
+    data?.lineItems.forEach((v) => {
+      calculatedValue += v.quantity * PACKAGING_PRICE
+    })
+    return calculatedValue
+  }, [data])
+
+  const { price: packagingPrice } = usePrice(
+    data && {
+      amount: getPackagingPrice(),
+      currencyCode: data.currency.code,
+    }
+  )
+  
   const handleClose = () => closeSidebar()
   const goToCheckout = () => setSidebarView('CHECKOUT_VIEW')
 
@@ -45,10 +65,10 @@ const CartSidebarView: FC = () => {
             <Bag className="absolute" />
           </span>
           <h2 className="pt-6 text-2xl font-bold tracking-wide text-center">
-            Your cart is empty
+            Твоя корзина пуста
           </h2>
           <p className="text-accent-3 px-10 text-center pt-2">
-            Biscuit oat cake wafer icing ice cream tiramisu pudding cupcake.
+            Свіжі морепродукти ммм.... мерщій до замовлень
           </p>
         </div>
       ) : error ? (
@@ -57,8 +77,7 @@ const CartSidebarView: FC = () => {
             <Cross width={24} height={24} />
           </span>
           <h2 className="pt-6 text-xl font-light text-center">
-            We couldn’t process the purchase. Please check your card information
-            and try again.
+            Ми не змогли опрацювати замовлення. Перевірте будь ласка свої дані і спробуйте ще раз, або зателефонуйте адміністратору
           </h2>
         </div>
       ) : success ? (
@@ -67,15 +86,15 @@ const CartSidebarView: FC = () => {
             <Check />
           </span>
           <h2 className="pt-6 text-xl font-light text-center">
-            Thank you for your order.
+            Дякуємо, за замовлення!
           </h2>
         </div>
       ) : (
         <>
           <div className="px-4 sm:px-6 flex-1">
-            <Link href="/cart">
+            <Link href="/cart" passHref>
               <Text variant="sectionHeading" onClick={handleClose}>
-                My Cart
+                Моя корзина
               </Text>
             </Link>
             <ul className={s.lineItemsList}>
@@ -92,24 +111,20 @@ const CartSidebarView: FC = () => {
           <div className="flex-shrink-0 px-6 py-6 sm:px-6 sticky z-20 bottom-0 w-full right-0 left-0 bg-accent-0 border-t text-sm">
             <ul className="pb-2">
               <li className="flex justify-between py-1">
-                <span>Subtotal</span>
+                <span>Страви</span>
                 <span>{subTotal}</span>
               </li>
               <li className="flex justify-between py-1">
-                <span>Taxes</span>
-                <span>Calculated at checkout</span>
-              </li>
-              <li className="flex justify-between py-1">
-                <span>Shipping</span>
-                <span className="font-bold tracking-wide">FREE</span>
+                <span>Упаковка</span>
+                <span>{packagingPrice}</span>
               </li>
             </ul>
             <div className="flex justify-between border-t border-accent-2 py-3 font-bold mb-2">
-              <span>Total</span>
+              <span>Всього до сплати</span>
               <span>{total}</span>
             </div>
             <div>
-              {process.env.COMMERCE_CUSTOMCHECKOUT_ENABLED ? (
+              {/* {process.env.COMMERCE_CUSTOMCHECKOUT_ENABLED ? (
                 <Button Component="a" width="100%" onClick={goToCheckout}>
                   Proceed to Checkout ({total})
                 </Button>
@@ -117,7 +132,10 @@ const CartSidebarView: FC = () => {
                 <Button href="/checkout" Component="a" width="100%">
                   Proceed to Checkout
                 </Button>
-              )}
+              )} */}
+                <Button href="/checkout" Component="a" width="100%">
+                  Оформити замовлення ({total})
+                </Button>
             </div>
           </div>
         </>

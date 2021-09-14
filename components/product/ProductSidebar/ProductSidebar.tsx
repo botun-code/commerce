@@ -34,9 +34,8 @@ const ProductSidebar: FC<ProductSidebarProps> = ({ product, className }) => {
         productId: String(product.id),
         variantId: '', // String(variant ? variant.id   : product.variants[0].id),
       })
-      console.log(product, '@@@', data);
       if (data) {
-        localStorage.setItem('bc_cartId', data._id)
+        localStorage.setItem('bc_cartId', (data as any)['_id'])
       }
       openSidebar()
       setLoading(false)

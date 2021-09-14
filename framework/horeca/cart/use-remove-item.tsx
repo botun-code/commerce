@@ -28,7 +28,12 @@ export const handler = {
     options,
     fetch,
   }: HookFetcherContext<RemoveItemHook>) {
-    return await fetch({ ...options, body: { itemId } })
+    let query = '';
+    const cartId = globalThis.localStorage.getItem('bc_cartId');
+    if(cartId && cartId !== 'null') {
+      query = `&cartId=${cartId}`
+    }
+    return await fetch({ ...options, body: { itemId }, query })
   },
   useHook: ({ fetch }: MutationHookContext<RemoveItemHook>) => <
     T extends LineItem | undefined = undefined

@@ -6,6 +6,7 @@ export * from '@commerce/types/cart'
 // https://developer.bigcommerce.com/api-reference/cart-checkout/server-server-cart-api/cart/getacart#responses
 export type HorecaCart = {
   id: string
+  _id: string
   parent_id?: string
   customer_id: number
   email: string

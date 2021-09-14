@@ -22,12 +22,14 @@ export const handler: MutationHook<AddItemHook> = {
       })
     }
 
-    const url = new URL(options.url!, process.env.NEXT_PUBLIC_API_URL)
-    url.searchParams.set('clientId', process.env.NEXT_PUBLIC_CLIENT_ID + '')
-
+    let query = '';
+    const cartId = globalThis.localStorage.getItem('bc_cartId');
+    if(cartId && cartId !== 'null') {
+      query = `&cartId=${cartId}`
+    }
     const data = await fetch({
       ...options,
-      url: url.href,
+      query,
       body: { ...item },
     })
     return data

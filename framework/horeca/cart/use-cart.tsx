@@ -15,7 +15,7 @@ export const fetcher: HookFetcherFn<GetCartHook> = async ({
   input: { cartId },
   fetch,
 }) => {
-  return cartId
+  return cartId && cartId !== 'null'
     ? await fetch({ ...options, query: `&cartId=${cartId}` })
     : null
 }

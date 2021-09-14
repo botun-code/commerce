@@ -33,7 +33,7 @@ const fetcher: Fetcher = async ({
   const updatedUrl = new URL(url!, process.env.NEXT_PUBLIC_API_URL)
   updatedUrl.searchParams.set('clientId', process.env.NEXT_PUBLIC_CLIENT_ID + '')
 
-  const res = await fetch(updatedUrl.href + query, { method, body, headers })
+  const res = await fetch(updatedUrl.href + (query || ''), { method, body, headers })
 
   if (res.ok) {
     const { data } = await res.json()
