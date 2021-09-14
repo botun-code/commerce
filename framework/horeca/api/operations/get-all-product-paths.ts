@@ -21,11 +21,14 @@ export default function getAllProductPathsOperation({
     config?: Partial<LocalConfig>
     preview?: boolean
   } = {}): Promise<GetAllProductPathsResult> {
-    debugger;
     const cnf = commerce.getConfig(config)
     const { data } = await cnf.storeApiFetch(routes.allProductsApiRoute)
 
-    return data.map(({ path }: Partial<HorecaProduct>) => ({ path }))
+    return {
+      products: data
+        .filter((v: Partial<HorecaProduct>) => !!v.path)
+        .map(({ path }: Partial<HorecaProduct>) => ({ path })),
+    }
   }
 
   return getAllProductPaths

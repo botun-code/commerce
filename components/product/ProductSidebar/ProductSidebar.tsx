@@ -21,21 +21,27 @@ const ProductSidebar: FC<ProductSidebarProps> = ({ product, className }) => {
   const [loading, setLoading] = useState(false)
   const [selectedOptions, setSelectedOptions] = useState<SelectedOptions>({})
 
-  useEffect(() => {
-    selectDefaultOptionFromProduct(product, setSelectedOptions)
-  }, [product])
+  // TODO: check
+  // useEffect(() => {
+  //   selectDefaultOptionFromProduct(product, setSelectedOptions)
+  // }, [product])
 
-  const variant = getProductVariant(product, selectedOptions)
+  // const variant = getProductVariant(product, selectedOptions)
   const addToCart = async () => {
     setLoading(true)
     try {
-      await addItem({
+      const data = await addItem({
         productId: String(product.id),
-        variantId: String(variant ? variant.id : product.variants[0].id),
+        variantId: '', // String(variant ? variant.id   : product.variants[0].id),
       })
+      console.log(product, '@@@', data);
+      if (data) {
+        localStorage.setItem('bc_cartId', data._id)
+      }
       openSidebar()
       setLoading(false)
     } catch (err) {
+      console.log(err)
       setLoading(false)
     }
   }
@@ -63,11 +69,12 @@ const ProductSidebar: FC<ProductSidebarProps> = ({ product, className }) => {
             className={s.button}
             onClick={addToCart}
             loading={loading}
-            disabled={variant?.availableForSale === false}
+            // disabled={variant?.availableForSale === false}
           >
-            {variant?.availableForSale === false
+            {/* {variant?.availableForSale === false
               ? 'Not Available'
-              : 'Add To Cart'}
+              : 'Add To Cart'} */}
+             Додати у кошик
           </Button>
         )}
       </div>

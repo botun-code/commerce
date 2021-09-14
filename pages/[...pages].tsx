@@ -35,7 +35,13 @@ export async function getStaticProps({
       preview,
     }))
 
-  const page = data?.page
+  const page = data?.page || {
+    name: 'test',
+    id: slug,
+    url: slug,
+    is_visible: true,
+    body: '',
+  }
 
   if (!page) {
     // We throw to make sure this fails at build time as this is never expected to happen

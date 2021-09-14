@@ -21,6 +21,7 @@ const fetcher: Fetcher = async ({
   url,
   method = 'GET',
   variables,
+  query,
   body: bodyObj,
 }) => {
   const hasBody = Boolean(variables || bodyObj)
@@ -28,7 +29,11 @@ const fetcher: Fetcher = async ({
     ? JSON.stringify(variables ? { variables } : bodyObj)
     : undefined
   const headers = hasBody ? { 'Content-Type': 'application/json' } : undefined
-  const res = await fetch(url!, { method, body, headers })
+
+  const updatedUrl = new URL(url!, process.env.NEXT_PUBLIC_API_URL)
+  updatedUrl.searchParams.set('clientId', process.env.NEXT_PUBLIC_CLIENT_ID + '')
+
+  const res = await fetch(updatedUrl.href + query, { method, body, headers })
 
   if (res.ok) {
     const { data } = await res.json()

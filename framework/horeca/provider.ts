@@ -11,7 +11,7 @@ import { handler as useSignup } from './auth/use-signup'
 
 export const localProvider = {
   locale: 'uk-ua',
-  cartCookie: 'session',
+  cartCookie: 'bc_cartId',
   fetcher,
   cart: { useCart, useAddItem, useUpdateItem, useRemoveItem },
   customer: { useCustomer },

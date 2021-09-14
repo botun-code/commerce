@@ -4,7 +4,7 @@ export * from '@commerce/types/cart'
 
 // TODO: this type should match:
 // https://developer.bigcommerce.com/api-reference/cart-checkout/server-server-cart-api/cart/getacart#responses
-export type BigcommerceCart = {
+export type HorecaCart = {
   id: string
   parent_id?: string
   customer_id: number

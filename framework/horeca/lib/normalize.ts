@@ -1,7 +1,7 @@
 import type { Product } from '../types/product'
-import type { Cart, BigcommerceCart, LineItem } from '../types/cart'
+import type { Cart, HorecaCart, LineItem } from '../types/cart'
 import type { Page } from '../types/page'
-// import type { BCCategory, Category } from '../types/site'
+import type { Category, HorecaCategory } from '../types/site'
 // import { definitions } from '../api/definitions/store-content'
 import update from './immutability'
 import getSlug from './get-slug'
@@ -32,17 +32,17 @@ export function normalizeProduct(productNode: HorecaProduct): Product {
   }
 }
 
-// export function normalizePage(page: definitions['page_Full']): Page {
-//   return {
-//     id: String(page.id),
-//     name: page.name,
-//     is_visible: page.is_visible,
-//     sort_order: page.sort_order,
-//     body: page.body,
-//   }
-// }
+export function normalizePage(page: any): Page {
+  return {
+    id: String(page.id),
+    name: page.name,
+    is_visible: page.is_visible,
+    sort_order: page.sort_order,
+    body: page.body,
+  }
+}
 
-export function normalizeCart(data: BigcommerceCart): Cart {
+export function normalizeCart(data: HorecaCart): Cart {
   return {
     id: data.id,
     customerId: String(data.customer_id),
@@ -85,11 +85,12 @@ function normalizeLineItem(item: any): LineItem {
   }
 }
 
-// export function normalizeCategory(category: BCCategory): Category {
-//   return {
-//     id: `${category.entityId}`,
-//     name: category.name,
-//     slug: getSlug(category.path),
-//     path: category.path,
-//   }
-// }
+export function normalizeCategory(category: HorecaCategory): Category {
+  return {
+    id: `${category._id}`,
+    name: category.name,
+    slug: category._id,
+    path: '/' + category._id,
+    description: category.description,
+  }
+}

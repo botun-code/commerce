@@ -17,6 +17,7 @@ interface Props {
 const countItem = (count: number, item: LineItem) => count + item.quantity
 
 const UserNav: FC<Props> = ({ className }) => {
+  // const cartId = globalThis.localStorage && globalThis.localStorage.getItem('bc_cartId')
   const { data } = useCart()
   const { data: customer } = useCustomer()
   const { toggleSidebar, closeSidebarIfPresent, openModal } = useUI()

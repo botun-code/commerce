@@ -15,14 +15,20 @@ export default function getAllProductsOperation({
     config,
   }: {
     query?: string
-    variables?: T['variables']
+    variables?: T['variables'] | any
     config?: Partial<LocalConfig>
     preview?: boolean
   } = {}): Promise<{ products: Product[] | any[] }> {
     const cnf = commerce.getConfig(config)
 
     const { data } = await cnf.storeApiFetch(routes.allProductsApiRoute)
-    const products = data.filter((v: HorecaProduct) => !!v.path).map((product: HorecaProduct) =>
+    const products = data.filter((v: HorecaProduct) => !!v.path).filter((v: HorecaProduct, index: number) => {
+      // TODO: implement correct filter
+      if(variables?.first) {
+        return index < variables?.first;
+      }
+      return true;
+    }).map((product: HorecaProduct) =>
       normalizeProduct(product)
     )
 

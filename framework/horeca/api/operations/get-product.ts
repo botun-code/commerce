@@ -18,10 +18,9 @@ export default function getProductOperation({
     config?: Partial<LocalConfig>
     preview?: boolean
   } = {}): Promise<Product | {} | any> {
-    debugger;
     const cnf = commerce.getConfig(config)
 
-    const { data } = await cnf.storeApiFetch(routes.product)
+    const { data } = await cnf.storeApiFetch(`${routes.productBySlug}/${variables?.slug}`)
 
     return {
       product: normalizeProduct(data),

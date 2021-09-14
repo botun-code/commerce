@@ -1,42 +1,61 @@
+import type { GetCartHook } from '@commerce/types/cart'
+import { HookFetcherFn, SWRHook } from '@commerce/utils/types'
+import { useHook, useSWRHook } from '@commerce/utils/use-hook'
 import { useMemo } from 'react'
-import { SWRHook } from '@commerce/utils/types'
-import useCart, { UseCart } from '@commerce/cart/use-cart'
+import { LocalProvider } from '..'
 
-export default useCart as UseCart<typeof handler>
+export type UseCart<
+  H extends SWRHook<GetCartHook<any>> = SWRHook<GetCartHook>
+> = ReturnType<H['useHook']>
 
-export const handler: SWRHook<any> = {
+const fn = (provider: LocalProvider) => provider.cart?.useCart!
+
+export const fetcher: HookFetcherFn<GetCartHook> = async ({
+  options,
+  input: { cartId },
+  fetch,
+}) => {
+  return cartId
+    ? await fetch({ ...options, query: `&cartId=${cartId}` })
+    : null
+}
+
+const useCart: UseCart = (input) => {
+  const hook = useHook(fn)
+  const fetcherFn = hook.fetcher ?? fetcher
+  const wrapper: typeof fetcher = (context) => {
+    context.input.cartId = globalThis.localStorage.getItem('bc_cartId') + ''
+    return fetcherFn(context)
+  }
+  return useSWRHook({ ...hook, fetcher: wrapper })(input)
+}
+
+export default useCart
+
+export const handler: SWRHook<GetCartHook> = {
   fetchOptions: {
-    query: '',
+    url: '/api/v1/cart',
+    method: 'GET',
   },
-  async fetcher() {
-    return {
-      id: '',
-      createdAt: '',
-      currency: { code: '' },
-      taxesIncluded: '',
-      lineItems: [],
-      lineItemsSubtotalPrice: '',
-      subtotalPrice: 0,
-      totalPrice: 0,
-    }
-  },
+  fetcher,
   useHook:
     ({ useData }) =>
     (input) => {
+      const response = useData({
+        swrOptions: { revalidateOnFocus: false, ...input?.swrOptions },
+      })
+
       return useMemo(
         () =>
-          Object.create(
-            {},
-            {
-              isEmpty: {
-                get() {
-                  return true
-                },
-                enumerable: true,
+          Object.create(response, {
+            isEmpty: {
+              get() {
+                return (response.data?.lineItems.length ?? 0) <= 0
               },
-            }
-          ),
-        []
+              enumerable: true,
+            },
+          }),
+        [response]
       )
     },
 }

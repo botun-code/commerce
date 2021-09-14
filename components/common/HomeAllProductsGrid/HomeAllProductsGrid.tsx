@@ -4,17 +4,16 @@ import type { Product } from '@commerce/types/product'
 import { Grid } from '@components/ui'
 import { ProductCard } from '@components/product'
 import s from './HomeAllProductsGrid.module.css'
-import { getCategoryPath, getDesignerPath } from '@lib/search'
+import { getCategoryPath } from '@lib/search'
+import { Category } from '@commerce/types/site'
 
 interface Props {
-  categories?: any
-  brands?: any
+  categories?: Category[]
   products?: Product[]
 }
 
 const HomeAllProductsGrid: FC<Props> = ({
   categories,
-  brands,
   products = [],
 }) => {
   return (
@@ -24,27 +23,13 @@ const HomeAllProductsGrid: FC<Props> = ({
           <ul className="mb-10">
             <li className="py-1 text-base font-bold tracking-wide">
               <Link href={getCategoryPath('')}>
-                <a>All Categories</a>
+                <a>МЕНЮ</a>
               </Link>
             </li>
-            {categories.map((cat: any) => (
+            {categories?.map((cat: Category) => (
               <li key={cat.path} className="py-1 text-accent-8 text-base">
                 <Link href={getCategoryPath(cat.path)}>
                   <a>{cat.name}</a>
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <ul className="">
-            <li className="py-1 text-base font-bold tracking-wide">
-              <Link href={getDesignerPath('')}>
-                <a>All Designers</a>
-              </Link>
-            </li>
-            {brands.flatMap(({ node }: any) => (
-              <li key={node.path} className="py-1 text-accent-8 text-base">
-                <Link href={getDesignerPath(node.path)}>
-                  <a>{node.name}</a>
                 </Link>
               </li>
             ))}
