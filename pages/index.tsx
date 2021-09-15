@@ -12,7 +12,7 @@ export async function getStaticProps({
 }: GetStaticPropsContext) {
   const config = { locale, locales }
   const productsPromise = commerce.getAllProducts({
-    variables: { first: 6 },
+    variables: { first: 15 },
     config,
     preview,
     // Saleor provider only
@@ -53,16 +53,21 @@ export default function Home({
         ))}
       </Grid>
       <Marquee variant="secondary">
-        {products.slice(0, 3).map((product: any, i: number) => (
+        {products.slice(4, 6).map((product: any, i: number) => (
           <ProductCard key={product.id} product={product} variant="slim" />
         ))}
       </Marquee>
       <Hero
-        headline=" Dessert dragée halvah croissant."
-        description="Cupcake ipsum dolor sit amet lemon drops pastry cotton candy. Sweet carrot cake macaroon bonbon croissant fruitcake jujubes macaroon oat cake. Soufflé bonbon caramels jelly beans. Tiramisu sweet roll cheesecake pie carrot cake. "
+        headline=" Улюблені страви від Mushlya – у вас вдома"
+        description="
+        <ul>
+          <li>1. Доставка в будь-яку точку міста</li>
+          <li>2. Вартість доставки - 33 гривні</li>
+          <li>3. Замовляйте щодня з 11.00 до 21.00</li>
+        </ul>"
       />
       <Grid layout="B" variant="filled">
-        {products.slice(0, 3).map((product: any, i: number) => (
+        {products.slice(7, 10).map((product: any, i: number) => (
           <ProductCard
             key={product.id}
             product={product}
@@ -74,7 +79,7 @@ export default function Home({
         ))}
       </Grid>
       <Marquee>
-        {products.slice(3).map((product: any, i: number) => (
+        {products.slice(11, 14).map((product: any, i: number) => (
           <ProductCard key={product.id} product={product} variant="slim" />
         ))}
       </Marquee>

@@ -25,6 +25,7 @@ const ProductCard: FC<Props> = ({
   noNameTag = false,
   variant = 'default',
 }) => {
+
   const { price } = usePrice({
     amount: product.price.value,
     baseAmount: product.price.retailPrice,
@@ -74,7 +75,7 @@ const ProductCard: FC<Props> = ({
                   <span>{product.name}</span>
                 </h3>
                 <div className={s.price}>
-                  {`${price} ${product.price?.currencyCode}`}
+                  {`${price}`}
                 </div>
               </div>
             )}
@@ -106,7 +107,7 @@ const ProductCard: FC<Props> = ({
             )}
             <ProductTag
               name={product.name}
-              price={`${price} ${product.price?.currencyCode}`}
+              price={`${price}`}
             />
             <div className={s.imageContainer}>
               {product?.images && (

@@ -1,9 +1,9 @@
 import { OperationContext } from '@commerce/api/operations'
-import { Category } from '@commerce/types/site'
 import { normalizeCategory } from '@framework/lib/normalize'
-import { HorecaCategory } from '@framework/types/site'
+import { HorecaCategory, Category } from '@framework/types/site'
 import { routes } from '@framework/api/endpoints/catalog/products'
 import { LocalConfig } from '../index'
+import { HorecaProduct } from '@framework/types/product'
 
 export type GetSiteInfoResult<
   T extends { categories: any[]; brands: any[] } = {
@@ -12,7 +12,9 @@ export type GetSiteInfoResult<
   }
 > = T
 
-export default function getSiteInfoOperation({ commerce }: OperationContext<any>) {
+export default function getSiteInfoOperation({
+  commerce,
+}: OperationContext<any>) {
   async function getSiteInfo({
     query,
     variables,
@@ -25,12 +27,20 @@ export default function getSiteInfoOperation({ commerce }: OperationContext<any>
   } = {}): Promise<GetSiteInfoResult> {
     const cnf = commerce.getConfig(config)
 
-    const {data} = await cnf.storeApiFetch(routes.categoriesApiRoute)
+    const { data } = await cnf.storeApiFetch(routes.categoriesApiRoute)
+    const { data: products } = await cnf.storeApiFetch(
+      routes.allProductsApiRoute
+    )
 
-    const categories = data.map((v: HorecaCategory) => normalizeCategory(v));
-    
+    const categories = data.map((v: HorecaCategory) => normalizeCategory(v))
+    const categoryIds = products
+      .filter((v: HorecaProduct) => v.available)
+      .map((v: HorecaProduct) => v.category)
+
     return Promise.resolve({
-      categories,
+      categories: categories.filter((v: Category) =>
+        categoryIds.includes(v.id)
+      ),
       brands: [],
     })
   }

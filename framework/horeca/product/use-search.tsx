@@ -17,12 +17,11 @@ export const handler: SWRHook<SearchProductsHook> = {
     method: 'GET',
   },
   fetcher({ input, options, fetch }) {
-    const { search, categoryId, sort } = input;
+    const { search, categoryId, sort } = input
     // Use a dummy base as we only care about the relative path
     const url = new URL(options.url!, process.env.NEXT_PUBLIC_API_URL)
     if (search) url.searchParams.set('search', search)
-    if (categoryId)
-      url.searchParams.set('category', String(categoryId))
+    if (categoryId) url.searchParams.set('category', String(categoryId))
     if (sort) url.searchParams.set('sort', sort)
     url.searchParams.set('clientId', process.env.NEXT_PUBLIC_CLIENT_ID + '')
     return fetch({

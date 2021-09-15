@@ -90,15 +90,38 @@ const SidebarUI: FC = () => {
   ) : null
 }
 
+const menu = [
+  {
+    name: 'Меню',
+    href: `/search`,
+  },
+  {
+    name: 'Популярне',
+    href: `/search?q=popular`,
+  },
+  {
+    name: 'Холодне',
+    href: `/search?q=cold`,
+  },
+  {
+    name: 'Гаряче',
+    href: `/search?q=hot`,
+  },
+  {
+    name: 'Напої',
+    href: `/search?q=drinks`,
+  },
+]
+
 const Layout: FC<Props> = ({
   children,
   pageProps: { categories = [], ...pageProps },
 }) => {
   const { acceptedCookies, onAcceptCookies } = useAcceptCookies()
   const { locale = 'en-US' } = useRouter()
-  const navBarlinks = categories.slice(0, 2).map((c) => ({
+  const navBarlinks = menu.map((c) => ({
     label: c.name,
-    href: `/search/${c.slug}`,
+    href: c.href,
   }))
 
   return (

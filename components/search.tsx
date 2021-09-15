@@ -1,7 +1,7 @@
 import cn from 'classnames'
 import type { SearchPropsType } from '@lib/search-props'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import { Layout } from '@components/common'
@@ -20,11 +20,9 @@ const SORT = {
   'price-desc': 'Price: High to low',
 }
 
-import {
-  filterQuery,
-  getCategoryPath,
-  useSearchMeta,
-} from '@lib/search'
+import { filterQuery, getCategoryPath, useSearchMeta } from '@lib/search'
+import { HorecaProduct } from '@framework/types/product'
+import { normalizeProduct } from '@framework/lib/normalize'
 
 export default function Search({ categories }: SearchPropsType) {
   const [activeFilter, setActiveFilter] = useState('')
@@ -47,6 +45,7 @@ export default function Search({ categories }: SearchPropsType) {
     sort: typeof sort === 'string' ? sort : '',
     locale,
   })
+  let products = useMemo(() => data?.products.map((v: any): any => normalizeProduct(v)), [data]) || [];
 
   const handleClick = (event: any, filter: string) => {
     if (filter !== activeFilter) {
@@ -74,8 +73,8 @@ export default function Search({ categories }: SearchPropsType) {
                   aria-expanded="true"
                 >
                   {activeCategory?.name
-                    ? `Category: ${activeCategory?.name}`
-                    : 'All Categories'}
+                    ? `Категорія: ${activeCategory?.name}`
+                    : 'Всі категорії'}
                   <svg
                     className="-mr-1 ml-2 h-5 w-5"
                     xmlns="http://www.w3.org/2000/svg"
@@ -105,7 +104,7 @@ export default function Search({ categories }: SearchPropsType) {
                   aria-labelledby="options-menu"
                 >
                   <ul>
-                    <li
+                    {/* <li
                       className={cn(
                         'block text-sm leading-5 text-accent-4 lg:text-base lg:no-underline lg:font-bold lg:tracking-wide hover:bg-accent-1 lg:hover:bg-transparent hover:text-accent-8 focus:outline-none focus:bg-accent-1 focus:text-accent-8',
                         {
@@ -113,9 +112,7 @@ export default function Search({ categories }: SearchPropsType) {
                         }
                       )}
                     >
-                      <Link
-                        href={{ pathname: getCategoryPath(''), query }}
-                      >
+                      <Link href={{ pathname: getCategoryPath(''), query }}>
                         <a
                           onClick={(e) => handleClick(e, 'categories')}
                           className={
@@ -125,7 +122,7 @@ export default function Search({ categories }: SearchPropsType) {
                           All Categories
                         </a>
                       </Link>
-                    </li>
+                    </li> */}
                     {categories.map((cat: any) => (
                       <li
                         key={cat.path}
@@ -171,7 +168,7 @@ export default function Search({ categories }: SearchPropsType) {
                       hidden: !data.found,
                     })}
                   >
-                    Показано {data.products.length} страв{' '}
+                    Показано {products.length} страв{' '}
                     {q && (
                       <>
                         для "<strong>{q}</strong>"
@@ -189,9 +186,7 @@ export default function Search({ categories }: SearchPropsType) {
                         Нажаль не можемо нічого знайти по "<strong>{q}</strong>"
                       </>
                     ) : (
-                      <>
-                        Для даної категорії немає страв
-                      </>
+                      <>Для даної категорії немає страв</>
                     )}
                   </span>
                 </>
@@ -206,7 +201,7 @@ export default function Search({ categories }: SearchPropsType) {
           )}
           {data ? (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {data.products.map((product: Product) => (
+              {products.map((product: Product) => (
                 <ProductCard
                   variant="simple"
                   key={product.id}
@@ -261,7 +256,9 @@ export default function Search({ categories }: SearchPropsType) {
             </div>
             <div
               className={`origin-top-left absolute lg:relative left-0 mt-2 w-full rounded-md shadow-lg lg:shadow-none z-10 mb-10 lg:block ${
-                activeFilter !== 'sort' || toggleFilter !== true ? 'сховано' : ''
+                activeFilter !== 'sort' || toggleFilter !== true
+                  ? 'сховано'
+                  : ''
               }`}
             >
               <div className="rounded-sm bg-accent-0 shadow-xs lg:bg-none lg:shadow-none">
